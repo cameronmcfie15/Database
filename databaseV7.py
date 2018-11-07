@@ -131,11 +131,11 @@ menu = Menu(Toplevel())
 root.mainloop()
 conn.close()
 
-# endTime = time.time()
-# file = open("times.txt","a")
-# timeTaken = str(endTime-startTime)
-# info = "This script took "+timeTaken+" seconds"
-# file.write(timeTaken+"\n")
-# messagebox.showinfo("Info", info)
-# file.close()
+endTime = time.time()
+file = open("times.txt","a")
+timeTaken = str(endTime-startTime)
+info = "This script took "+timeTaken+" seconds"
+file.write(timeTaken+"\n")
+messagebox.showinfo("Info", info)
+file.close()
 
