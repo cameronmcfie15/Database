@@ -12,7 +12,7 @@ conn = sqlite3.connect('data.db')
 cur = conn.cursor()
 
 
-# cur.execute("ALTER TABLE Games ADD COLUMN Completed")
+# cur.execute("ALTER TABLE Games ADD COLUMN Description")
 
 # def tableCreate():
 #     cur.execute("""CREATE TABLE Games(
@@ -43,11 +43,13 @@ def columnCount():
     numberOfColumns = len(cur.fetchall())
     return numberOfColumns
 
+
 def columnNames():
     cur.execute('''PRAGMA table_info(Games)''')
     for col in cur.fetchall():
         columnList.append(col[1])
     return columnList
+
 
 def rowCount():
     cur.execute('''SELECT * FROM Games''')
@@ -87,18 +89,19 @@ def tree():
 class App:
     def __init__(self, master):
         tree()
-        self.master = master
+        self.varLabel, self.input = StringVar(), StringVar()
+        self.varLabel.set("Ready!")
         self.all_rows = cur.fetchall()
         self.rowList = []
         for self.row in self.all_rows:
             self.rowList.append(self.row)
-        self.frame1, self.frame2 = Frame(self.master), Frame(self.master)
+        self.frame1, self.frame2 = Frame(master), Frame(master)
         self.frame1.pack(side=TOP)
         self.frame2.pack(side=BOTTOM)
-        self.but1 = Button(self.frame1, text='Left').pack(side=LEFT, anchor=N)
-        self.but2 = Button(self.frame1, text='This is the Center button').pack(side=LEFT, anchor=N)
-        self.but3 = Button(self.frame1, text='OK').pack(side=LEFT, anchor=N)
-        self.but4 = Button(self.frame2, text='Center').pack(side=TOP, fill=X, expand=YES)
+        self.but1 = Button(self.frame1, text="Left").pack(side=LEFT, anchor=N)
+        self.entry = Entry(self.frame1, textvariable=self.input).pack(side=LEFT, anchor=N)
+        self.infoLabel = Label(self.frame1, textvariable=self.varLabel).pack(side=LEFT, anchor=N)
+        self.but4 = Button(self.frame2, text="Confrim", command=self.update).pack(side=TOP, fill=X, expand=YES)
         columnNames()
         self.tree = ttk.Treeview(self.frame2, columns=columnList, show='headings', height="400", style='Custom.Treeview')
         self.tree.pack(side=BOTTOM)
@@ -108,6 +111,11 @@ class App:
             self.tree.heading(col, text=col)
         for index, row in enumerate(self.rowList):
             self.tree.insert('', index, values=row, tags="odd")
+
+    def update(self):
+        #self.varLabel = "win"
+        self.varLabel.set("Done!")
+
 
 class Menu:
     def __init__(self, master):
