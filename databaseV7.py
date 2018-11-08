@@ -1,7 +1,6 @@
 import sqlite3, time
 from tkinter import *
 from tkinter import ttk
-import tkinter as tk
 from tkinter import messagebox
 
 startTime = time.time()
@@ -105,12 +104,12 @@ class App:
         columnNames()
         self.tree = ttk.Treeview(self.frame2, columns=columnList, show='headings', height="400", style='Custom.Treeview')
         self.tree.pack(side=BOTTOM)
-        self.tree.tag_configure('odd', background='#1A5276')
+        self.tree.tag_configure('row', background='#1A5276')
         for col in columnNames():
             self.tree.column(col, width=100)
             self.tree.heading(col, text=col)
         for index, row in enumerate(self.rowList):
-            self.tree.insert('', index, values=row, tags="odd")
+            self.tree.insert('', index, values=row, tags="row")
 
     def update(self):
         #self.varLabel = "win"
@@ -129,6 +128,7 @@ def top():
     menu.frame3.destroy()
     top = Toplevel()
     top.geometry("1000x800")
+    top.resizable(False, False)
     App(top)
 
 root = Tk()
