@@ -89,7 +89,11 @@ class App:
     def __init__(self, master):
         tree()
         self.varLabel, self.input = StringVar(), StringVar()
+        self.currentOption = StringVar()
+        self.optionList = columnNames()
+        cur.execute('''SELECT * FROM Games ORDER BY priority DESC;''')
         self.varLabel.set("Ready!")
+        #cur.execute('''SELECT * FROM Games ORDER BY priority DESC;''')
         self.all_rows = cur.fetchall()
         self.rowList = []
         for self.row in self.all_rows:
@@ -97,7 +101,7 @@ class App:
         self.frame1, self.frame2 = Frame(master), Frame(master)
         self.frame1.pack(side=TOP)
         self.frame2.pack(side=BOTTOM)
-        self.but1 = Button(self.frame1, text="Left").pack(side=LEFT, anchor=N)
+        self.menu = OptionMenu(self.frame1, self.currentOption, *self.optionList).pack(side=LEFT, anchor=N)
         self.entry = Entry(self.frame1, textvariable=self.input).pack(side=LEFT, anchor=N)
         self.infoLabel = Label(self.frame1, textvariable=self.varLabel).pack(side=LEFT, anchor=N)
         self.but4 = Button(self.frame2, text="Confrim", command=self.update).pack(side=TOP, fill=X, expand=YES)
