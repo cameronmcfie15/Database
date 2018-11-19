@@ -105,13 +105,13 @@ class App:
         self.entry = Entry(self.frame1, textvariable=self.input).pack(side=LEFT, anchor=N)
         self.infoLabel = Label(self.frame1, textvariable=self.varLabel).pack(side=LEFT, anchor=N)
         self.but4 = Button(self.frame2, text="Confrim", command=self.update).pack(side=TOP, fill=X, expand=YES)
-        columnNames()
         self.tree = ttk.Treeview(self.frame2, columns=columnList, show='headings', height="400", style='Custom.Treeview')
         self.tree.pack(side=BOTTOM)
         self.tree.tag_configure('row', background='#1A5276')
         for col in columnNames():
-            self.tree.column(col, width=100)
+            self.tree.column(col, width=80)
             self.tree.heading(col, text=col)
+            #self.count += 1
         for index, row in enumerate(self.rowList):
             self.tree.insert('', index, values=row, tags="row")
 
@@ -131,7 +131,9 @@ class Menu:
 def top():
     menu.frame3.destroy()
     top = Toplevel()
-    top.geometry("1000x800")
+    windowGeometry = (str(80 * columnCount())+"x800")
+    print(windowGeometry)
+    top.geometry(windowGeometry)
     top.resizable(False, False)
     App(top)
 
