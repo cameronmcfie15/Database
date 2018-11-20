@@ -56,8 +56,9 @@ def columnCount():
     return numberOfColumns
 
 
-def columnNames():
-    cur.execute('''PRAGMA table_info(Games)''')
+def columnNames(table):
+    #table = 'Games'
+    cur.execute('PRAGMA table_info('+table+')')
     for col in cur.fetchall():
         columnList.append(col[1])
     return columnList
@@ -100,15 +101,23 @@ class App:
     def __init__(self, master):
         tree()
         self.varLabel, self.input = StringVar(), StringVar()
-        self.games(master)
+        self.frame1, self.frame2 = Frame(master), Frame(master)
+        self.frame1.pack(side=TOP)
+        self.frame2.pack(side=BOTTOM)
+        self.currentOption = StringVar()
+
+
+        self.games()
+
     def update(self):
         #self.varLabel = "win"
         self.varLabel.set("Done!")
         self.tree.pack_forget()
+        self.videos()
 
-    def games(self, master):
-        self.currentOption = StringVar()
-        self.optionList = columnNames()
+    def games(self):
+        self.table = 'Games'
+        self.optionList = columnNames(self.table)
         cur.execute('''SELECT * FROM Games ORDER BY priority DESC;''')
         self.varLabel.set("Ready!")
         # cur.execute('''SELECT * FROM Games ORDER BY priority DESC;''')
@@ -116,9 +125,6 @@ class App:
         self.rowList = []
         for self.row in self.all_rows:
             self.rowList.append(self.row)
-        self.frame1, self.frame2 = Frame(master), Frame(master)
-        self.frame1.pack(side=TOP)
-        self.frame2.pack(side=BOTTOM)
         self.menu = OptionMenu(self.frame1, self.currentOption, *self.optionList).pack(side=LEFT, anchor=N)
         self.entry = Entry(self.frame1, textvariable=self.input).pack(side=LEFT, anchor=N)
         self.infoLabel = Label(self.frame1, textvariable=self.varLabel).pack(side=LEFT, anchor=N)
@@ -127,7 +133,7 @@ class App:
                                  style='Custom.Treeview')
         self.tree.pack(side=BOTTOM)
         self.tree.tag_configure('row', background='#1A5276')
-        for col in columnNames():
+        for col in columnNames(self.table):
             self.tree.column(col, width=80)
             self.tree.heading(col, text=col)
         for index, row in enumerate(self.rowList):
