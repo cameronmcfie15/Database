@@ -45,11 +45,11 @@ def addEntry():
         newPriority = input("What is the priority of the new Game[1-5]:")
         # newMulitplayer = input("What is the multiplayer of the new Game:")
 
-        cur.execute("""INSERT INTO Games(name, score, priority)
+        cur.execute("""INSERT INTO Videos(name, score, priority)
                     VALUES(?,?,?)""", (newName, newScore, newPriority))
         conn.commit()
 
-
+addEntry()
 def columnCount():
     cur.execute('''pragma table_info(Games);''')
     numberOfColumns = len(cur.fetchall())
@@ -57,7 +57,6 @@ def columnCount():
 
 
 def columnNames(table):
-    #table = 'Games'
     cur.execute('PRAGMA table_info('+table+')')
     for col in cur.fetchall():
         columnList.append(col[1])
@@ -79,32 +78,14 @@ def update():
             testList.append(item)
 
 
-def tree():
-    style = ttk.Style()
-    style.element_create("Custom.Treeheading.border", "from", "default")
-    style.layout("Custom.Treeview.Heading", [
-        ("Custom.Treeheading.cell", {'sticky': 'nswe'}),
-        ("Custom.Treeheading.border", {'sticky': 'nswe', 'children': [
-            ("Custom.Treeheading.padding", {'sticky': 'nswe', 'children': [
-                ("Custom.Treeheading.image", {'side': 'right', 'sticky': ''}),
-                ("Custom.Treeheading.text", {'sticky': 'we'})
-            ]})
-        ]}),
-    ])
-    style.configure("Custom.Treeview.Heading",
-                    background="#154360", foreground="white", relief="flat")
-    style.map("Custom.Treeview.Heading",
-              relief=[('active', 'groove'), ('pressed', 'sunken')])
-
-
 class App:
     def __init__(self, master):
-        tree()
         self.varLabel, self.input = StringVar(), StringVar()
         self.frame1, self.frame2 = Frame(master), Frame(master)
         self.frame1.pack(side=TOP)
         self.frame2.pack(side=BOTTOM)
         self.currentOption = StringVar()
+        self.tree()
 
 
         self.games()
@@ -142,7 +123,46 @@ class App:
             #     break
 
     def videos(self):
+        self.table = 'Videos'
+        self.optionList = columnNames(self.table)
+        cur.execute('''SELECT * FROM Videos ORDER BY priority DESC;''')
+        print(cur.fetchall())
+        self.varLabel.set("Ready!")
+        self.all_rows = cur.fetchall()
+        self.rowList = []
+        for self.row in self.all_rows:
+            self.rowList.append(self.row)
+        self.menu = OptionMenu(self.frame1, self.currentOption, *self.optionList).pack(side=LEFT, anchor=N)
+        self.entry = Entry(self.frame1, textvariable=self.input).pack(side=LEFT, anchor=N)
+        self.infoLabel = Label(self.frame1, textvariable=self.varLabel).pack(side=LEFT, anchor=N)
+        self.but4 = Button(self.frame2, text="Confirm", command=self.update).pack(side=TOP, fill=X, expand=YES)
+        self.tree = ttk.Treeview(self.frame2, columns=columnList, show='headings', height="400",
+                                 style='Custom.Treeview')
+        self.tree.pack(side=BOTTOM)
+        self.tree.tag_configure('row', background='#1A5276')
+        for col in columnNames(self.table):
+            self.tree.column(col, width=80)
+            self.tree.heading(col, text=col)
+        for index, row in enumerate(self.rowList):
+            self.tree.insert('', index, values=row, tags="row")
         pass
+
+    def tree(self):
+        self.style = ttk.Style()
+        self.style.element_create("Custom.Treeheading.border", "from", "default")
+        self.style.layout("Custom.Treeview.Heading", [
+            ("Custom.Treeheading.cell", {'sticky': 'nswe'}),
+            ("Custom.Treeheading.border", {'sticky': 'nswe', 'children': [
+                ("Custom.Treeheading.padding", {'sticky': 'nswe', 'children': [
+                    ("Custom.Treeheading.image", {'side': 'right', 'sticky': ''}),
+                    ("Custom.Treeheading.text", {'sticky': 'we'})
+                ]})
+            ]}),
+        ])
+        self.style.configure("Custom.Treeview.Heading",
+                        background="#154360", foreground="white", relief="flat")
+        self.style.map("Custom.Treeview.Heading",
+                  relief=[('active', 'groove'), ('pressed', 'sunken')])
 
 
 class Menu:
