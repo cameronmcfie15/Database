@@ -126,7 +126,6 @@ class App:
             self.tree.insert('', index, values=row, tags="row")
             # if index == 2:
             #     break
-        t()
     def update(self):
         #self.varLabel = "win"
         self.varLabel.set("Done!")
