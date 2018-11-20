@@ -12,7 +12,21 @@ cur = conn.cursor()
 cur.execute('''SELECT * FROM Games ORDER BY priority DESC;''')
 
 
-def t():
+def tableCreate():
+    cur.execute("""CREATE TABLE Videos(
+                id INTEGER PRIMARY KEY,
+                name TEXT,
+                score TEXT,
+                priority TEXT,
+                type TEXT,
+                genre TEXT,
+                platform TEXT,
+                completed TEXT,
+                description TEXT
+                )""")
+
+
+def time():
     endTime = time.time()
     file = open("times.txt","a")
     timeTaken = str(endTime-startTime)
@@ -86,11 +100,18 @@ class App:
     def __init__(self, master):
         tree()
         self.varLabel, self.input = StringVar(), StringVar()
+        self.games(master)
+    def update(self):
+        #self.varLabel = "win"
+        self.varLabel.set("Done!")
+        self.tree.pack_forget()
+
+    def games(self, master):
         self.currentOption = StringVar()
         self.optionList = columnNames()
         cur.execute('''SELECT * FROM Games ORDER BY priority DESC;''')
         self.varLabel.set("Ready!")
-        #cur.execute('''SELECT * FROM Games ORDER BY priority DESC;''')
+        # cur.execute('''SELECT * FROM Games ORDER BY priority DESC;''')
         self.all_rows = cur.fetchall()
         self.rowList = []
         for self.row in self.all_rows:
@@ -101,8 +122,9 @@ class App:
         self.menu = OptionMenu(self.frame1, self.currentOption, *self.optionList).pack(side=LEFT, anchor=N)
         self.entry = Entry(self.frame1, textvariable=self.input).pack(side=LEFT, anchor=N)
         self.infoLabel = Label(self.frame1, textvariable=self.varLabel).pack(side=LEFT, anchor=N)
-        self.but4 = Button(self.frame2, text="Confrim", command=self.update).pack(side=TOP, fill=X, expand=YES)
-        self.tree = ttk.Treeview(self.frame2, columns=columnList, show='headings', height="400", style='Custom.Treeview')
+        self.but4 = Button(self.frame2, text="Confirm", command=self.update).pack(side=TOP, fill=X, expand=YES)
+        self.tree = ttk.Treeview(self.frame2, columns=columnList, show='headings', height="400",
+                                 style='Custom.Treeview')
         self.tree.pack(side=BOTTOM)
         self.tree.tag_configure('row', background='#1A5276')
         for col in columnNames():
@@ -112,9 +134,9 @@ class App:
             self.tree.insert('', index, values=row, tags="row")
             # if index == 2:
             #     break
-    def update(self):
-        #self.varLabel = "win"
-        self.varLabel.set("Done!")
+
+    def videos(self):
+        pass
 
 
 class Menu:
@@ -145,13 +167,3 @@ conn.close()
 
 # cur.execute("ALTER TABLE Games ADD COLUMN Description")
 
-# def tableCreate():
-#     cur.execute("""CREATE TABLE Games(
-#                 id INTEGER PRIMARY KEY,
-#                 name TEXT,
-#                 score TEXT,
-#                 priority TEXT,
-#                 type TEXT,
-#                 genre TEXT,
-#                 multiplayer TEXT
-#                 )""")
