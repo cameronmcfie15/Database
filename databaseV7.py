@@ -23,6 +23,17 @@ cur = conn.cursor()
 #                 genre TEXT,
 #                 multiplayer TEXT
 #                 )""")
+def t():
+    endTime = time.time()
+    file = open("times.txt","a")
+    timeTaken = str(endTime-startTime)
+    info = "This script took "+timeTaken+" seconds"
+    print(info)
+    file.write(timeTaken+"\n")
+    messagebox.showinfo("Info", info)
+    file.close()
+
+
 
 def addEntry():
     addCount = int(input("How many Games do you want to add?"))
@@ -111,10 +122,11 @@ class App:
         for col in columnNames():
             self.tree.column(col, width=80)
             self.tree.heading(col, text=col)
-            #self.count += 1
         for index, row in enumerate(self.rowList):
             self.tree.insert('', index, values=row, tags="row")
-
+            # if index == 2:
+            #     break
+        t()
     def update(self):
         #self.varLabel = "win"
         self.varLabel.set("Done!")
@@ -144,12 +156,4 @@ root.title("Everything")
 menu = Menu(Toplevel())
 root.mainloop()
 conn.close()
-
-endTime = time.time()
-file = open("times.txt","a")
-timeTaken = str(endTime-startTime)
-info = "This script took "+timeTaken+" seconds"
-file.write(timeTaken+"\n")
-messagebox.showinfo("Info", info)
-file.close()
 
