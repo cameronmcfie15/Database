@@ -9,20 +9,9 @@ testList = []
 conn = sqlite3.connect('data.db')
 
 cur = conn.cursor()
+cur.execute('''SELECT * FROM Games ORDER BY priority DESC;''')
 
 
-# cur.execute("ALTER TABLE Games ADD COLUMN Description")
-
-# def tableCreate():
-#     cur.execute("""CREATE TABLE Games(
-#                 id INTEGER PRIMARY KEY,
-#                 name TEXT,
-#                 score TEXT,
-#                 priority TEXT,
-#                 type TEXT,
-#                 genre TEXT,
-#                 multiplayer TEXT
-#                 )""")
 def t():
     endTime = time.time()
     file = open("times.txt","a")
@@ -32,7 +21,6 @@ def t():
     file.write(timeTaken+"\n")
     messagebox.showinfo("Info", info)
     file.close()
-
 
 
 def addEntry():
@@ -67,9 +55,6 @@ def rowCount():
     return numberOfRows
 
 
-cur.execute('''SELECT * FROM Games ORDER BY priority DESC;''')
-
-
 def update():
     all_rows = cur.fetchall()
     rowList = []
@@ -95,6 +80,7 @@ def tree():
                     background="#154360", foreground="white", relief="flat")
     style.map("Custom.Treeview.Heading",
               relief=[('active', 'groove'), ('pressed', 'sunken')])
+
 
 class App:
     def __init__(self, master):
@@ -139,6 +125,7 @@ class Menu:
     def create(self):
         top()
 
+
 def top():
     menu.frame3.destroy()
     top = Toplevel()
@@ -156,3 +143,15 @@ menu = Menu(Toplevel())
 root.mainloop()
 conn.close()
 
+# cur.execute("ALTER TABLE Games ADD COLUMN Description")
+
+# def tableCreate():
+#     cur.execute("""CREATE TABLE Games(
+#                 id INTEGER PRIMARY KEY,
+#                 name TEXT,
+#                 score TEXT,
+#                 priority TEXT,
+#                 type TEXT,
+#                 genre TEXT,
+#                 multiplayer TEXT
+#                 )""")
