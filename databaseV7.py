@@ -10,7 +10,7 @@ conn = sqlite3.connect('data.db')
 
 cur = conn.cursor()
 cur.execute('''SELECT * FROM Games ORDER BY priority DESC;''')
-
+# TRY USING MAP
 
 def tableCreate():
     cur.execute("""CREATE TABLE Videos(
@@ -49,7 +49,7 @@ def addEntry():
                     VALUES(?,?,?)""", (newName, newScore, newPriority))
         conn.commit()
 
-addEntry()
+
 def columnCount():
     cur.execute('''pragma table_info(Games);''')
     numberOfColumns = len(cur.fetchall())
@@ -60,6 +60,7 @@ def columnNames(table):
     cur.execute('PRAGMA table_info('+table+')')
     for col in cur.fetchall():
         columnList.append(col[1])
+    print(columnList)
     return columnList
 
 
@@ -94,6 +95,13 @@ class App:
         #self.varLabel = "win"
         self.varLabel.set("Done!")
         self.tree.pack_forget()
+        self.but4.pack_forget()
+        self.menu.pack_forget()
+        self.entry.pack_forget()
+        self.infoLabel.pack_forget()
+        global columnList
+        columnList = []
+        #self.but4.pack_forget()
         self.videos()
 
     def games(self):
@@ -106,10 +114,14 @@ class App:
         self.rowList = []
         for self.row in self.all_rows:
             self.rowList.append(self.row)
-        self.menu = OptionMenu(self.frame1, self.currentOption, *self.optionList).pack(side=LEFT, anchor=N)
-        self.entry = Entry(self.frame1, textvariable=self.input).pack(side=LEFT, anchor=N)
-        self.infoLabel = Label(self.frame1, textvariable=self.varLabel).pack(side=LEFT, anchor=N)
-        self.but4 = Button(self.frame2, text="Confirm", command=self.update).pack(side=TOP, fill=X, expand=YES)
+        self.menu = OptionMenu(self.frame1, self.currentOption, *self.optionList)
+        self.menu.pack(side=LEFT, anchor=N)
+        self.entry = Entry(self.frame1, textvariable=self.input)
+        self.entry.pack(side=LEFT, anchor=N)
+        self.infoLabel = Label(self.frame1, textvariable=self.varLabel)
+        self.infoLabel.pack(side=LEFT, anchor=N)
+        self.but4 = Button(self.frame2, text="Confirm", command=self.update)
+        self.but4.pack(side=TOP, fill=X, expand=YES)
         self.tree = ttk.Treeview(self.frame2, columns=columnList, show='headings', height="400",
                                  style='Custom.Treeview')
         self.tree.pack(side=BOTTOM)
@@ -126,7 +138,6 @@ class App:
         self.table = 'Videos'
         self.optionList = columnNames(self.table)
         cur.execute('''SELECT * FROM Videos ORDER BY priority DESC;''')
-        print(cur.fetchall())
         self.varLabel.set("Ready!")
         self.all_rows = cur.fetchall()
         self.rowList = []
@@ -135,13 +146,13 @@ class App:
         self.menu = OptionMenu(self.frame1, self.currentOption, *self.optionList).pack(side=LEFT, anchor=N)
         self.entry = Entry(self.frame1, textvariable=self.input).pack(side=LEFT, anchor=N)
         self.infoLabel = Label(self.frame1, textvariable=self.varLabel).pack(side=LEFT, anchor=N)
-        self.but4 = Button(self.frame2, text="Confirm", command=self.update).pack(side=TOP, fill=X, expand=YES)
+        self.but4 = Button(self.frame2, text="Confirm", command=self.nothing).pack(side=TOP, fill=X, expand=YES)
         self.tree = ttk.Treeview(self.frame2, columns=columnList, show='headings', height="400",
                                  style='Custom.Treeview')
         self.tree.pack(side=BOTTOM)
         self.tree.tag_configure('row', background='#1A5276')
         for col in columnNames(self.table):
-            self.tree.column(col, width=80)
+            self.tree.column(col, width=108)
             self.tree.heading(col, text=col)
         for index, row in enumerate(self.rowList):
             self.tree.insert('', index, values=row, tags="row")
@@ -164,6 +175,9 @@ class App:
         self.style.map("Custom.Treeview.Heading",
                   relief=[('active', 'groove'), ('pressed', 'sunken')])
 
+    def nothing(self):
+        print('here')
+        pass
 
 class Menu:
     def __init__(self, master):
@@ -180,7 +194,7 @@ def top():
     windowGeometry = (str(80 * columnCount())+"x800")
     print(windowGeometry)
     top.geometry(windowGeometry)
-    top.resizable(False, False)
+    top.resizable(True, True)
     App(top)
 
 root = Tk()
