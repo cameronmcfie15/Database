@@ -60,7 +60,6 @@ def columnNames(table):
     cur.execute('PRAGMA table_info('+table+')')
     for col in cur.fetchall():
         columnList.append(col[1])
-    print(columnList)
     return columnList
 
 
@@ -92,7 +91,6 @@ class App:
         self.games()
 
     def update(self):
-        #self.varLabel = "win"
         self.varLabel.set("Done!")
         self.tree.pack_forget()
         self.but4.pack_forget()
@@ -101,8 +99,11 @@ class App:
         self.infoLabel.pack_forget()
         global columnList
         columnList = []
-        #self.but4.pack_forget()
         self.videos()
+        if self.table == "Games":
+            self.videos()
+        if self.table == "Videos":
+            self.games()
 
     def games(self):
         self.table = 'Games'
